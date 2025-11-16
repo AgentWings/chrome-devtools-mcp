@@ -35,7 +35,9 @@ MCP clients.
 
 ## Getting started
 
-Add the following config to your MCP client:
+### STDIO Transport (Default)
+
+For local development and MCP client integration, add the following config:
 
 ```json
 {
@@ -48,8 +50,63 @@ Add the following config to your MCP client:
 }
 ```
 
-> [!NOTE]  
+> [!NOTE]
 > Using `chrome-devtools-mcp@latest` ensures that your MCP client will always use the latest version of the Chrome DevTools MCP server.
+
+### HTTP Transport (Cloud/Web)
+
+For cloud deployments, serverless functions, or web integrations, use HTTP transport:
+
+```bash
+# Start HTTP server on port 3000
+npx chrome-devtools-mcp@latest --port 3000
+
+# Or with environment variable
+PORT=3000 npx chrome-devtools-mcp@latest
+```
+
+**HTTP Endpoints:**
+
+- `/mcp` - MCP protocol endpoint (Streamable HTTP)
+- `/health` - Health check endpoint
+
+**Client Configuration for HTTP:**
+
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+### Project Structure
+
+The server follows a clean, modular architecture:
+
+```
+src/
+├── index.ts              # Entry point (Node version check)
+├── main.ts               # Main server setup & transport selection
+├── server.ts             # Server factory (creates McpServer instances)
+├── config.ts             # Configuration management
+├── cli.ts                # CLI argument parsing
+├── transport/            # Transport implementations
+│   ├── stdio.ts          # STDIO transport
+│   ├── http.ts           # HTTP transport (Streamable HTTP)
+│   └── index.ts          # Transport exports
+├── tools/                # MCP tool definitions
+│   ├── input.ts          # Input automation tools
+│   ├── pages.ts          # Page navigation tools
+│   ├── console.ts        # Console debugging tools
+│   ├── network.ts        # Network inspection tools
+│   ├── performance.ts    # Performance analysis tools
+│   └── ...
+├── formatters/           # Response formatters
+└── utils/                # Utility functions
+```
 
 ### MCP Client configuration
 
@@ -360,6 +417,10 @@ The Chrome DevTools MCP server supports the following configuration option:
   Set to false to exclude tools related to network.
   - **Type:** boolean
   - **Default:** `true`
+
+- **`--port`**
+  Port number for HTTP server. When specified, server runs in HTTP mode instead of STDIO. Useful for cloud deployments and web integrations.
+  - **Type:** number
 
 <!-- END AUTO GENERATED OPTIONS -->
 

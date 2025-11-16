@@ -160,6 +160,11 @@ export const cliOptions = {
     default: true,
     describe: 'Set to false to exclude tools related to network.',
   },
+  port: {
+    type: 'number',
+    describe:
+      'Port number for HTTP server. When specified, server runs in HTTP mode instead of STDIO. Useful for cloud deployments and web integrations.',
+  },
 } satisfies Record<string, YargsOptions>;
 
 export function parseArguments(version: string, argv = process.argv) {
@@ -212,6 +217,7 @@ export function parseArguments(version: string, argv = process.argv) {
         'Disable tools in the performance category',
       ],
       ['$0 --no-category-network', 'Disable tools in the network category'],
+      ['$0 --port 3000', 'Start HTTP server on port 3000'],
     ]);
 
   return yargsInstance

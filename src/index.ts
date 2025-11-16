@@ -6,8 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import './polyfill.js';
+
 import {version} from 'node:process';
 
+// Check Node.js version
 const [major, minor] = version.substring(1).split('.').map(Number);
 
 if (major === 20 && minor < 19) {
@@ -31,4 +34,5 @@ if (major < 20) {
   process.exit(1);
 }
 
+// Import and run main server
 await import('./main.js');
